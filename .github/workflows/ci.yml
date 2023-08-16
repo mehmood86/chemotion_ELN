@@ -48,67 +48,67 @@ jobs:
     defaults:
       run:
         shell: bash    
-    # container: complat/chemotion_eln_runner:v1.7.0-3
+    container: complat/chemotion_eln_runner:v1.7.0-3
 
-    # services:
-    #   postgres:
-    #     image: postgres    # https://hub.docker.com/_/postgres
-    #     env:
-    #       POSTGRES_DB: chemotion_test # image creates this db on startup
-    #       POSTGRES_USER: chemotion_test
-    #       POSTGRES_HOST_AUTH_METHOD: trust
-    #     options: >-
-    #       --health-cmd pg_isready
-    #       --health-interval 10s
-    #       --health-timeout 5s
-    #       --health-retries 5
+    services:
+      postgres:
+        image: postgres    # https://hub.docker.com/_/postgres
+        env:
+          POSTGRES_DB: chemotion_test # image creates this db on startup
+          POSTGRES_USER: chemotion_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: browser-actions/setup-chrome@v1
       - run: chrome --version
       
 
-      # - name: create user for datacollectors testing
-      #   run: |
-      #     useradd testuser -m -s /bin/bash
-      #     mkdir /home/testuser/.ssh
-      #     chown testuser:testuser /home/testuser/.ssh
-      #     chmod 700 /home/testuser/.ssh
+      - name: create user for datacollectors testing
+        run: |
+          useradd testuser -m -s /bin/bash
+          mkdir /home/testuser/.ssh
+          chown testuser:testuser /home/testuser/.ssh
+          chmod 700 /home/testuser/.ssh
 
-      # - name: configure ssh for datacollectors testing
-      #   run: |
-      #     service ssh restart
-      #     mkdir -p $HOME/.ssh
-      #     chmod 700 $HOME/.ssh
-      #     ssh-keygen -t ed25519 -f $HOME/.ssh/id_test -N ""
-      #     # echo "$(<$HOME/.ssh/id_test.pub)" >> $HOME/.ssh/authorized_keys
-      #     echo "$(<$HOME/.ssh/id_test.pub)" | sudo tee -a /home/testuser/.ssh/authorized_keys
-      #     eval `ssh-agent`
-      #     ssh-add $HOME/.ssh/id_test
-      #     ssh-keyscan -H 127.0.0.1  >> $HOME/.ssh/known_hosts
+      - name: configure ssh for datacollectors testing
+        run: |
+          service ssh restart
+          mkdir -p $HOME/.ssh
+          chmod 700 $HOME/.ssh
+          ssh-keygen -t ed25519 -f $HOME/.ssh/id_test -N ""
+          # echo "$(<$HOME/.ssh/id_test.pub)" >> $HOME/.ssh/authorized_keys
+          echo "$(<$HOME/.ssh/id_test.pub)" | sudo tee -a /home/testuser/.ssh/authorized_keys
+          eval `ssh-agent`
+          ssh-add $HOME/.ssh/id_test
+          ssh-keyscan -H 127.0.0.1  >> $HOME/.ssh/known_hosts
 
-      # - name: configure repository
-      #   run: |
-      #     mv public/welcome-message-sample.md public/welcome-message.md
-      #     cd config
-      #     cp database.yml.gitlab database.yml
-      #     cp -f datacollectors.yml.example datacollectors.yml
-      #     cp -f profile_default.yml.example profile_default.yml
-      #     cp -f shrine.yml.example shrine.yml
-      #     cp -f storage.yml.example storage.yml
-      #     cp -f radar.yml.example radar.yml
-      #     touch klasses.json
-      #     bundle config set without ''
+      - name: configure repository
+        run: |
+          mv public/welcome-message-sample.md public/welcome-message.md
+          cd config
+          cp database.yml.gitlab database.yml
+          cp -f datacollectors.yml.example datacollectors.yml
+          cp -f profile_default.yml.example profile_default.yml
+          cp -f shrine.yml.example shrine.yml
+          cp -f storage.yml.example storage.yml
+          cp -f radar.yml.example radar.yml
+          touch klasses.json
+          bundle config set without ''
 
-      # - name: bundle install
-      #   run: bundle install
+      - name: bundle install
+        run: bundle install
 
-      # - name: yarn install
-      #   run:  yarn install --production=false
+      - name: yarn install
+        run:  yarn install --production=false
 
-      # - name: prepare postgres
-      #   run: |
-      #     RAILS_ENV=test bundle exec rake db:migrate
+      - name: prepare postgres
+        run: |
+          RAILS_ENV=test bundle exec rake db:migrate
 
       # - name: npm test
       #   run: npm test
@@ -138,4 +138,4 @@ jobs:
         run: RAILS_ENV=test bundle exec rails server -d -b localhost -p 3000
 
       - name: run Cypress tests # wait on server? (https://til.simonwillison.net/bash/start-test-then-stop-server)
-        run: yarn cypress run --project spec
+        run: yarn cypress run --project spec --browser chrome
