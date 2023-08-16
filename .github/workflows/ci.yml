@@ -7,7 +7,7 @@ on:
     branches:
       - cypress-ci # TODO: replace with main
 
-jobs:
+jobs:    
   # linting:
   #   if: github.event.pull_request && (github.triggering_actor != 'dependabot[bot]')
   #   runs-on: ubuntu-latest
@@ -47,8 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        shell: bash
-
+        shell: bash    
     # container: complat/chemotion_eln_runner:v1.7.0-3
 
     # services:
@@ -65,9 +64,9 @@ jobs:
     #       --health-retries 5
 
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v3
+      - uses: browser-actions/setup-chrome@v1
       - run: chrome --version
+      
 
       # - name: create user for datacollectors testing
       #   run: |
