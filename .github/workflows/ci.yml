@@ -64,6 +64,8 @@ jobs:
           --health-retries 5
 
     steps:
+      - run: $ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb 
+      - run: sudo dpkg -i google-chrome-stable_current_amd64.deb
       - uses: browser-actions/setup-chrome@v1
       - run: chrome --version
       
