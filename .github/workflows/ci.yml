@@ -67,7 +67,7 @@ jobs:
     steps:
       - name: checkout repository
         uses: actions/checkout@v3
-        run: chrome --version
+      - run: chrome --version
 
       # - name: create user for datacollectors testing
       #   run: |
